@@ -14,8 +14,17 @@ set val(y) 500 ;# Y dimension of topography
 set val(stop) 100 ;# time of simulation end
 set val(veloc) 5.0 ;# velocidade no
 
+#Read arguments
+if {$argc >= 2} {
+	set val(rp) [expr [lindex $argv 0]]
+	set val(nn) [expr [lindex $argv 1]]
+    set val(veloc) [expr [lindex $argv 2]]
+}
+
+puts "$val(rp) $val(nn) $val(veloc)"
+
 # *** Packet Loss Trace ***
-set f0 [open npkts02.tr w]
+set f0 [open trace_files/npkts02.tr a+]
 set f1 [open lost02.tr w]
 
 set nsim [new Simulator]
@@ -133,18 +142,13 @@ proc record {} {
 
     for {set i 0} {$i < $val(nn) } { incr i } {
         set pkts_receive [expr {$pkts_receive + [$sink($i) set npkts_]}]
-        set pkts_lost [expr {$pkts_lost + [$sink(2) set nlost_]}]
-        puts $pkts_receive
-        puts $pkts_lost
+        set pkts_lost [expr {$pkts_lost + [$sink($i) set nlost_]}]
 
         set i [expr {$i + 1}]
     }
 
-    set bw0 [$sink(2) set npkts_]
-    set bw1 [$sink(2) set nlost_]
-
     set now [$ns now]
-    puts $f0 "Experimento 1 Pdr: [expr  [format %.2f $bw0]/($bw0+$bw1)]"
+    puts $f0 "Experimento 1 Pdr: [expr  [format %.2f $pkts_receive]/($pkts_receive+$pkts_lost)]"
     
     # Reset Variables
     $sink(2) set bytes_ 0
