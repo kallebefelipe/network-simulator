@@ -1,5 +1,8 @@
-# traces
+#traces
 *.tr
 
 #nam
 *.nam
+
+#vscode
+.vscode
