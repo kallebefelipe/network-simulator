@@ -13,19 +13,20 @@ set val(x) 500 ;# X dimension of topography
 set val(y) 500 ;# Y dimension of topography
 set val(stop) 100 ;# time of simulation end
 set val(veloc) 5.0 ;# velocidade no
+set val(experiment) 1; # number of experiment
 
 #Read arguments
 if {$argc >= 2} {
 	set val(rp) [expr [lindex $argv 0]]
 	set val(nn) [expr [lindex $argv 1]]
     set val(veloc) [expr [lindex $argv 2]]
+    set val(experiment) [expr [lindex $argv 3]]
 }
 
-puts "$val(rp) $val(nn) $val(veloc)"
+puts "$val(rp) $val(nn) $val(veloc) $val(experiment)"
 
 # *** Packet Loss Trace ***
-set f0 [open trace_files/npkts02.tr a+]
-set f1 [open lost02.tr w]
+set f0 [open trace_files/$val(rp)_$val(nn)_$val(veloc).tr a+]
 
 set nsim [new Simulator]
 
@@ -132,7 +133,7 @@ set holdtime 0
 
 $nsim at 100 "record"
 proc record {} {
-    global sink f0 f1 holdtime val n
+    global sink f0 holdtime val n experiment
     set ns [Simulator instance]
 
     set time 0 ;#Set Sampling Time to 0.9 Sec 
@@ -148,7 +149,7 @@ proc record {} {
     }
 
     set now [$ns now]
-    puts $f0 "Experimento 1 Pdr: [expr  [format %.2f $pkts_receive]/($pkts_receive+$pkts_lost)]"
+    puts $f0 "Experimento $val(experiment) PDR: [expr  [format %.2f $pkts_receive]/($pkts_receive+$pkts_lost)]"
     
     # Reset Variables
     $sink(2) set bytes_ 0
@@ -158,11 +159,10 @@ proc record {} {
 }
 
 proc stop {} {
-    global nsim f0 f1
+    global nsim f0
 
     # Close Trace Files
     close $f0
-    close $f1
 
     # Reset Trace File
     $nsim flush-trace
