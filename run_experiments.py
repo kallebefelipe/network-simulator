@@ -1,16 +1,25 @@
 import os
 import time
+# from statistic import run_statistic
+
+protocols = ['DSDV', 'DSR']
+protocols = ['DSR']
+nodes = ['12', '32', '52']
+velocitys = ['1', '5', '10']
 
 
 def run():
-    protocols = ['DSDV', 'DSR']
-    nodes = [12, 32, 52]
-    velocity = [1.0, 5.0, 10.0]
-
-    for i in range(1, 11):
-        print(i)
-        cmd = 'ns wireless.tcl'
-        output = os.popen(cmd)
-        time.sleep(5)
+    for protocol in protocols:
+        for node in nodes:
+            for velocity in velocitys:
+                for i in range(1, 11):
+                    print(i)
+                    cmd = 'ns wireless.tcl ' + \
+                        '{' + protocol + '} ' + \
+                        node + ' ' + str(velocity) + \
+                        ' ' + str(i)
+                    output = os.popen(cmd)
+                    time.sleep(30)
 
 run()
+# statistic()
