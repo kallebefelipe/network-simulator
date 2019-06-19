@@ -20,6 +20,7 @@ def run():
                         ' ' + str(i)
                     output = os.popen(cmd)
                     time.sleep(30)
-
+                import ipdb; ipdb.set_trace()
+                # time.sleep(120)
 run()
 # statistic()

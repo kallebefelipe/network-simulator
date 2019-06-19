@@ -3,12 +3,13 @@ set val(chan) Channel/WirelessChannel ;# channel type
 set val(prop) Propagation/TwoRayGround ;# radio-propagation model
 set val(netif) Phy/WirelessPhy ;# network interface type
 set val(mac) Mac/802_11 ;# MAC type
-set val(ifq) Queue/DropTail/PriQueue ;# interface queue type
+# set val(ifq) Queue/DropTail/PriQueue ;# interface queue type
+set val(ifq) CMUPriQueue ; 
 set val(ll) LL ;# link layer type
 set val(ant) Antenna/OmniAntenna ;# antenna model
 set val(ifqlen) 50 ;# max packet in ifq
 set val(nn) 10 ;# number of mobilenodes
-set val(rp) DSDV ;# routing protocol
+set val(rp) DSR ;# routing protocol
 set val(x) 500 ;# X dimension of topography
 set val(y) 500 ;# Y dimension of topography
 set val(stop) 100 ;# time of simulation end
@@ -103,7 +104,6 @@ for {set i 0} {$i < $val(nn) } { incr i } {
     set i [expr {$i + 1}]
 }
 
-
 # Define rotulos
 # Cria os nos
 for {set i 0} {$i < $val(nn) } { incr i } {
@@ -118,7 +118,7 @@ proc destination {} {
       global nsim val n 
       set time 1.0
       set now [$nsim now]
-      for {set i 1} {$i<$val(nn)} {incr i} {
+      for {set i 0} {$i<$val(nn)} {incr i} {
             set xx [expr rand()*500]
             set yy [expr rand()*500]
             $nsim at $now "$n($i) setdest $xx $yy $val(veloc)"
