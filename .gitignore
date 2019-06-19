@@ -1,8 +1,11 @@
-#traces
-*.tr
-
 #nam
 *.nam
 
 #vscode
 .vscode
+
+# wireless.tr
+wireless.tr
+
+# pycache
+__pycache__/
