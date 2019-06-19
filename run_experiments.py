@@ -18,9 +18,9 @@ def run():
                         '{' + protocol + '} ' + \
                         node + ' ' + str(velocity) + \
                         ' ' + str(i)
-                    output = os.popen(cmd)
-                    time.sleep(30)
-                import ipdb; ipdb.set_trace()
-                # time.sleep(120)
+                    os.popen(cmd)
+                    time.sleep(10)
+                time.sleep(1)
+
+
 run()
-# statistic()
