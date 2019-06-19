@@ -15,6 +15,7 @@ set val(y) 500 ;# Y dimension of topography
 set val(stop) 100 ;# time of simulation end
 set val(veloc) 5.0 ;# velocidade no
 set val(experiment) 1; # number of experiment
+global defaultRNG
 
 #Read arguments
 if {$argc >= 2} {
@@ -23,6 +24,18 @@ if {$argc >= 2} {
     set val(veloc) [expr [lindex $argv 2]]
     set val(experiment) [expr [lindex $argv 3]]
 }
+
+# seed the default RNG
+$defaultRNG seed $val(experiment)
+# create the RNGs and set them to the correct substream
+set sizeRNG [new RNG]
+$sizeRNG next-substream
+
+# size_ is a uniform random variable describing packet sizes
+set size_ [new RandomVariable/Uniform]
+$size_ set min_ 1
+$size_ set max_ 499
+$size_ use-rng $sizeRNG
 
 puts "$val(rp) $val(nn) $val(veloc) $val(experiment)"
 
@@ -79,8 +92,9 @@ for {set i 0} {$i < $val(nn) } { incr i } {
 }
 
 for {set i 0} {$i < $val(nn) } { incr i } {
-    set xx [expr rand()*500]
-    set yy [expr rand()*500]
+    set xx [expr round([$size_ value])]
+    set yy [expr round([$size_ value])]
+    
     $n($i) set X_ $xx
     $n($i) set Y_ $yy
     $n($i) set Z_ 0.0        
@@ -115,12 +129,12 @@ for {set i 0} {$i < $val(nn) } { incr i } {
 #Destination procedure..
 $nsim at 0.0 "destination"
 proc destination {} {
-      global nsim val n 
+      global nsim val n size_
       set time 1.0
       set now [$nsim now]
       for {set i 0} {$i<$val(nn)} {incr i} {
-            set xx [expr rand()*500]
-            set yy [expr rand()*500]
+            set xx [expr round([$size_ value])]
+            set yy [expr round([$size_ value])]
             $nsim at $now "$n($i) setdest $xx $yy $val(veloc)"
       }
       $nsim at [expr $now+$time] "destination"
